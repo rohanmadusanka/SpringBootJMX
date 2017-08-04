@@ -3,6 +3,15 @@ package com.rohan.model;
 public class JMXModel {
 	private String domain;
 	private String type;
+	private String name;
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	private String attribute;
 	private String value;
 	

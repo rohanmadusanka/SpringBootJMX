@@ -4,9 +4,9 @@
 	var homectrl = function($scope, $http, $interval, $log) {
 
 		var url = "http://localhost:8080";
-		$scope.hint="";
+		$scope.hint = "";
 		var onError = function(reason) {
-			$scope.error = "Oops.. Something went wrong...."+reason;
+			$scope.error = "Oops.. Something went wrong...." + reason;
 		}
 
 		/* Read Text File Start */
@@ -163,7 +163,14 @@
 		}
 		var onValueReadComplete = function(response) {
 			$log.info(response.data);
-			$scope.attributevalue = response.data;
+			delete $scope.error;
+			delete $scope.success;
+			delete $scope.textfiledata;
+			if (response.data === "") {
+				$scope.error="Unavailable";
+			} else {
+				$scope.attributevalue = response.data+"";
+			}
 		}
 		/* Get value according to domain , type , name and attribute start */
 
@@ -171,8 +178,8 @@
 
 		$scope.fillTable = function() {
 			$log.info("Reading Domain File");
-			//$http.get(url + "/fillTable").then(onfillTableComplete, onError);
-			
+			// $http.get(url + "/fillTable").then(onfillTableComplete, onError);
+
 			$http({
 				url : url + '/fillTable',
 				method : 'GET',
@@ -182,32 +189,28 @@
 					delete $scope.hint;
 					delete $scope.success;
 					delete $scope.error;
-					
-					if(data==="success"){
-						$scope.success="File updated successfully....";
-					}else{
-						$scope.error="Oops.. Something went wrong....";
+
+					if (data === "success") {
+						$scope.success = "File updated successfully....";
+					} else {
+						$scope.error = "Oops.. Something went wrong....";
 					}
 				} ]
 			});
-			
-		}
-		/*var onfillTableComplete = function(response) {
-			$log.info(response);
 
-		}*/
+		}
+		/*
+		 * var onfillTableComplete = function(response) { $log.info(response);
+		 *  }
+		 */
 		/* Fill table end */
 
 		/* Open file start */
-		$scope.error="";
+		$scope.error = "";
 		$scope.openTextFile = function() {
 			$log.info("Opening Text File");
-			//$http.get(url + "/openFile").then(onopenFileComplete, onError);
-			
-			
-			
-			
-			
+			// $http.get(url + "/openFile").then(onopenFileComplete, onError);
+
 			$http({
 				url : url + '/openFile',
 				method : 'GET',
@@ -217,35 +220,27 @@
 					delete $scope.success;
 					delete $scope.error;
 					delete $scope.hint;
-					
-					if(data==="success"){
-						$scope.success="File successfully opened....";
-					}else{
-						$scope.error="Oops.. Something went wrong....";
+
+					if (data === "success") {
+						$scope.success = "File successfully opened....";
+					} else {
+						$scope.error = "Oops.. Something went wrong....";
 					}
 				} ]
 			});
-			
-		}
-	/*	var onopenFileComplete = function(response) {
-			$log.info(response);
 
-		}*/
+		}
+		/*
+		 * var onopenFileComplete = function(response) { $log.info(response);
+		 *  }
+		 */
 		/* Open file end */
-		
-		
-		
+
 		$scope.getValuesToNewPage = function() {
-			
+
 			window.location = "/getJMXValues";
 		}
-		
-		
-		
-		
-		
-		
-		
+
 	};
 	app.controller("springbootappcontroller", homectrl);
 

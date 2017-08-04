@@ -108,19 +108,24 @@
 		
 		<h3 style="color: orange;">Use this format to fill text file manually :</h3>
 		
-+--------+------+-----------+-------+<br/>
-| DOMAIN | TYPE | ATTRIBUTE | VALUE |<br/>
-+--------+------+-----------+-------+<br/>
-|java.lang| OperatingSystem |FreePhysicalMemorySize<br/>
-|java.lang| OperatingSystem |FreeSwapSpaceSize<br/>
-|java.lang| OperatingSystem |ProcessCpuLoad<br/>
-|java.lang| OperatingSystem |SystemCpuLoad<br/>
-|java.lang| OperatingSystem |TotalSwapSpaceSize<br/>
-|java.lang| OperatingSystem |SystemLoadAverage<br/>
-|java.lang| Memory |Verbose<br/>
-|java.lang| ClassLoading |LoadedClassCount<br/>
-|JMImplementation| MBeanServerDelegate |MBeanServerId<br/>
-+--------+------+-----------+-------+<br/>
++--------+------+------+-----------+-------+<br/>
+| DOMAIN | TYPE | NAME | ATTRIBUTE | VALUE |<br/>
++--------+------+------+-----------+-------+<br/>
+|java.lang| OperatingSystem | |FreePhysicalMemorySize<br/>
+|java.lang| OperatingSystem | |FreeSwapSpaceSize<br/>
+|java.lang| OperatingSystem | |ProcessCpuLoad<br/>
+|java.lang| OperatingSystem | |SystemCpuLoad<br/>
+|java.lang| OperatingSystem | |TotalSwapSpaceSize<br/>
+|java.lang| OperatingSystem | |SystemLoadAverage<br/>
+|java.lang| Memory | |Verbose<br/>
+|java.lang| ClassLoading | |LoadedClassCount<br/>
+|JMImplementation| MBeanServerDelegate | |MBeanServerId<br/>
+|Tomcat | ThreadPool |"http-nio-8080"|selectorTimeout<br/>
+|Tomcat | ThreadPool |"http-nio-8080"|useSendfile<br/>
+|Tomcat | ThreadPool |"http-nio-8080"|pollerThreadPriority<br/>
+|Tomcat | ThreadPool |"http-nio-8080"|port<br/>
++--------+------+------+-----------+-------+<br/>
+
 		
 		</div>
 		

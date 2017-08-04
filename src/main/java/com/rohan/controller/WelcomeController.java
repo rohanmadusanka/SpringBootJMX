@@ -33,7 +33,7 @@ public class WelcomeController {
 		List<JMXModel> list=ioService.getDataFromFile();
 		for(JMXModel ob : list) {
 			try {
-				ob.setValue(jmxService.getValuesForFillData(ob.getDomain(),ob.getType(), ob.getAttribute()));
+				ob.setValue(jmxService.getValuesForFillData(ob.getDomain(),ob.getType(),ob.getName(), ob.getAttribute()));
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -159,25 +159,28 @@ public class JMXService {
 		Set<ObjectName> mbeans = mBeanServer.queryNames(null, null);
 		for (ObjectName mbean : mbeans) {
 			if (mbean.getDomain().equals(Domain)) {
-				//System.out.println("Got Domain :" + Domain);
-				if (mbean.getKeyProperty("type").equals(keyProperty)) {
-					//System.out.println("Got Type :" + keyProperty);
+				System.out.println("Key Property " + keyProperty + " " + mbean.getKeyProperty("type"));
+				// System.out.println("Got Domain :" + Domain);
+				if (mbean.getKeyProperty("type") != null) {
+					if (mbean.getKeyProperty("type").equals(keyProperty)) {
+						// System.out.println("Got Type :" + keyProperty);
 
-					if (name != null && !name.isEmpty()) {
-						if (mbean.getKeyProperty("name").equals(name)) {
-							//System.out.println("Got Name :" + name);
+						if (name != null && !name.isEmpty()) {
+							if (mbean.getKeyProperty("name").equals(name)) {
+								// System.out.println("Got Name :" + name);
+								try {
+									return getAttributes(mBeanServer, mbean, attribute);
+								} catch (Exception ex) {
+									ex.printStackTrace();
+								}
+							}
+						} else {
 							try {
 								return getAttributes(mBeanServer, mbean, attribute);
-							} catch (Exception ex) {
-								ex.printStackTrace();
+							} catch (Exception e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
-						}
-					} else {
-						try {
-							return getAttributes(mBeanServer, mbean, attribute);
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
 						}
 					}
 				}
@@ -201,9 +204,17 @@ public class JMXService {
 
 		for (MBeanAttributeInfo attr : attrInfo) {
 			if (attr.isReadable()) {
-				//System.out.println("Checking Attribute :"+attr.getName()+": and :"+attribute+":");
+				// System.out.println("Checking Attribute :"+attr.getName()+": and
+				// :"+attribute+":");
 				if (attr.getName().equals(attribute)) {
-					//System.out.println("Value : " + mbsc.getAttribute(http, attr.getName()).toString());
+
+					System.out.println("Got value AS " + mbsc.getAttribute(http, attr.getName()));
+					Object ob = mbsc.getAttribute(http, attr.getName());
+
+					if ("".startsWith("javax.management.openmbean.CompositeDataSupport")) {
+						return "javax.management.openmbean.CompositeDataSupport";
+					}
+
 					return mbsc.getAttribute(http, attr.getName()).toString();
 				}
 			}
@@ -211,44 +222,63 @@ public class JMXService {
 		return null;
 	}
 
-	public String getValuesForFillData(String Domain,String type, String attribute) throws Exception {
-		//System.out.println("Domain : "+Domain+" Type : "+type+" Attribute : "+attribute);
+	public String getValuesForFillData(String Domain, String type, String name, String attribute) throws Exception {
+		// System.out.println("Domain : "+Domain+" Type : "+type+" Attribute :
+		// "+attribute);
 		MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-		Set<ObjectName> mbeans = mBeanServer.queryNames(new ObjectName(Domain+":type="+type+"*"), null);
+		
+		String query=Domain+":type="+type+"*";
+		if (!name.equals("")) {
+			
+			query=Domain+":type="+type+",name="+name;
+			
+		}else {
+			name = null;
+		}
+
+		Set<ObjectName> mbeans = mBeanServer.queryNames(new ObjectName(query), null);
+		String value = null;
 		for (ObjectName mbean : mbeans) {
 			
-			MBeanInfo info = mBeanServer.getMBeanInfo(mbean);
-			MBeanAttributeInfo[] attrInfo = info.getAttributes();
-
-			String portno = System.getProperty("com.sun.management.jmxremote.port");
-
-			JMXServiceURL url = new JMXServiceURL(
-					"service:jmx:rmi:///jndi/rmi://" + "localhost" + ":" + portno + "/jmxrmi");
-			JMXConnector jmxc = JMXConnectorFactory.connect(url, null);
-			MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
-
-			try {
-					String value=null;
-					while(value==null) {
-					 value=getAttributesForFillTable(mBeanServer, mbean, attribute,attrInfo,mbsc);
+			
+				try {
+					
+					value = getAttributesForFillTable(mBeanServer, mbean, attribute);
+					
+					if(value!=null) {
+						return value;
 					}
+					
 					return value;
-				}catch (Exception e) {
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
+			
 		}
 		return "";
 	}
 
-	public String getAttributesForFillTable(final MBeanServer mBeanServer, final ObjectName http, String attribute,MBeanAttributeInfo[] attrInfo,MBeanServerConnection mbsc)
+	public String getAttributesForFillTable(final MBeanServer mBeanServer, final ObjectName http, String attribute)
 			throws InstanceNotFoundException, IntrospectionException, ReflectionException,
 			javax.management.IntrospectionException, IOException, MBeanException, AttributeNotFoundException {
-		
+
+		MBeanInfo info = mBeanServer.getMBeanInfo(http);
+		MBeanAttributeInfo[] attrInfo = info.getAttributes();
+
+		String portno = System.getProperty("com.sun.management.jmxremote.port");
+
+		JMXServiceURL url = new JMXServiceURL(
+				"service:jmx:rmi:///jndi/rmi://" + "localhost" + ":" + portno + "/jmxrmi");
+		JMXConnector jmxc = JMXConnectorFactory.connect(url, null);
+		MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
+
 		for (MBeanAttributeInfo attr : attrInfo) {
 			if (attr.isReadable()) {
-				//System.out.println("Checking Attribute :"+attr.getName()+": and :"+attribute+":");
+				// System.out.println("Checking Attribute :"+attr.getName()+": and
+				// :"+attribute+":");
 				if (attr.getName().equals(attribute)) {
-					//System.out.println("Value : " + mbsc.getAttribute(http, attr.getName()).toString());
+					 System.out.println("Value : " + mbsc.getAttribute(http, attr.getName()).toString());
+					// attr.getName()).toString());
 					return mbsc.getAttribute(http, attr.getName()).toString();
 				}
 			}

@@ -79,7 +79,8 @@ public class IOService {
 						JMXModel jmxModel= new JMXModel();
 						jmxModel.setDomain(data[1].trim());
 						jmxModel.setType(data[2].trim());
-						jmxModel.setAttribute(data[3].trim());
+						jmxModel.setName(data[3].trim());
+						jmxModel.setAttribute(data[4].trim());
 						textData.add(jmxModel);
 					}
 				}
@@ -99,7 +100,7 @@ public class IOService {
 		for(JMXModel ob : list) {
 			System.out.print("In loop Domain : "+ob.getDomain()+" Attribute : "+ob.getAttribute());
 			try {
-				ob.setValue(jmxService.getValuesForFillData(ob.getDomain(),ob.getType(), ob.getAttribute()));
+				ob.setValue(jmxService.getValuesForFillData(ob.getDomain(),ob.getType(),ob.getName() ,ob.getAttribute()));
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -125,6 +126,7 @@ public class IOService {
 		List<String> textData = new ArrayList<>();
 		int domain_len = 6;
 		int type_len = 4;
+		int name_len = 4;
 		int attr_len = 9;
 		int value_len = 5;
 		if (jmxlist != null) {
@@ -135,6 +137,9 @@ public class IOService {
 				}
 				if (type_len < jmxmodel.getType().length()) {
 					type_len = jmxmodel.getType().length();
+				}
+				if (name_len < jmxmodel.getName().length()) {
+					name_len = jmxmodel.getName().length();
 				}
 				if (attr_len < jmxmodel.getAttribute().length()) {
 					attr_len = jmxmodel.getAttribute().length();
@@ -147,7 +152,7 @@ public class IOService {
 
 		String tbl = "";
 
-		tbl += blankLine(domain_len,type_len, attr_len, value_len);
+		tbl += blankLine(domain_len,type_len,name_len, attr_len, value_len);
 		textData.add(tbl);
 		tbl = "";
 
@@ -158,6 +163,11 @@ public class IOService {
 		
 		tbl += " | TYPE";
 		for (int i = 0; i < type_len - 4; i++) {
+			tbl += " ";
+		}
+		
+		tbl += " | NAME";
+		for (int i = 0; i < name_len - 4; i++) {
 			tbl += " ";
 		}
 		
@@ -175,7 +185,7 @@ public class IOService {
 		textData.add(tbl);
 		tbl = "";
 
-		tbl += blankLine(domain_len,type_len, attr_len, value_len);
+		tbl += blankLine(domain_len,type_len,name_len, attr_len, value_len);
 
 		textData.add(tbl);
 		tbl = "";
@@ -188,6 +198,10 @@ public class IOService {
 				}
 				tbl += " | " + st.getType();
 				for (int i = 0; i < type_len - ((st.getType()).length()); i++) {
+					tbl += " ";
+				}
+				tbl += " | " + st.getName();
+				for (int i = 0; i < name_len - ((st.getName()).length()); i++) {
 					tbl += " ";
 				}
 				tbl += " | " + st.getAttribute();
@@ -205,20 +219,24 @@ public class IOService {
 			}
 		}
 
-		tbl += blankLine(domain_len,type_len, attr_len, value_len);
+		tbl += blankLine(domain_len,type_len,name_len, attr_len, value_len);
 		textData.add(tbl);
 		tbl = "";
 		System.out.println(tbl);
 		return textData;
 	}
 
-	private String blankLine(int domain_len,int type_len, int attr_len, int value_len) {
+	private String blankLine(int domain_len,int type_len,int name_len, int attr_len, int value_len) {
 		String tbl = "+-";
 		for (int i = 0; i < domain_len; i++) {
 			tbl += "-";
 		}
 		tbl += "-+-";
 		for (int i = 0; i < type_len; i++) {
+			tbl += "-";
+		}
+		tbl += "-+-";
+		for (int i = 0; i < name_len; i++) {
 			tbl += "-";
 		}
 		tbl += "-+-";
