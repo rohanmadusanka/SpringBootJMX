@@ -1,21 +1,17 @@
 <!DOCTYPE html>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html lang="en" ng-app="springbootapp">
 <head>
 
 <link rel="stylesheet" type="text/css"
 	href="webjars/bootstrap/3.3.7/css/bootstrap.min.css" />
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
 
-<c:url value="/css/main.css" var="jstlCss" />
-<link href="${jstlCss}" rel="stylesheet" />
+<link href="/css/main.css" rel="stylesheet" />
 
 
-<c:url value="/js/controller.js" var="jstljs" />
-<script src="${jstljs}" type="text/javascript"></script>
+<script src="/js/controller.js" type="text/javascript"></script>
 
 
 </head>
@@ -34,17 +30,24 @@
 
 		<div class="starter-template">
 
-			<form name="readText" ng-submit="readTextFile()">
+			<form ng-submit="readTextFile()">
 				<input class="btn btn-default" type="submit" value="Read Text File" style="width: 200px;"/>
 			</form>
-			<form name="readText" ng-submit="getDomains()">
+			<form ng-submit="getDomains()">
 				<input class="btn btn-default" type="submit" value="JMX" style="width: 200px;"/>
 			</form>
-
-
-
-
-
+			<form ng-submit="fillTable()">
+				<input class="btn btn-default" type="submit" value="Fill Table" style="width: 200px;"/>
+			</form>
+			<form ng-submit="openTextFile()">
+				<input class="btn btn-default" type="submit" value="Open Text File" style="width: 200px;"/>
+			</form>
+			<form ng-submit="getValuesToNewPage()">
+				<input class="btn btn-default" type="submit" value="Get values in new page" style="width: 200px;"/>
+			</form>
+			
+			
+			
 			<div class="panel panel-info" ng-class="textfiledata"
 				ng-show="textfiledata" style="margin-top: 50px;">
 				<div class="panel-body">Text File content</div>
@@ -52,9 +55,6 @@
 				<div ng-repeat="tfd in textfiledata">{{tfd}}</div>
 				</div>
 			</div>
-
-
-
 			<div ng-show="domains">
 				<select class="form-control" style="width: 50%; margin-top: 50px;" ng-change="getTypes()"  ng-model="domainid">
 					<option selected="true">-Select Domain-</option>
@@ -93,14 +93,37 @@
 			<h3>{{attributevalue}}</h3>
 			</div>
 			
-			<div ng-show="attributes">
-			<h4 ng-repeat="attribute in attributes">{{attribute}}</h4>
-			</div> 
 			
 			<div ng-show="error">
 			<h4 style="color: red;">{{error}}</h4>
 			</div> 
+			<div ng-show="success">
+			<h4 style="color: green;">{{success}}</h4>
+			</div> 
 		</div>
+		
+		
+		
+		<div style="margin-top: 100px;">
+		
+		<h3 style="color: orange;">Use this format to fill text file manually :</h3>
+		
++--------+------+-----------+-------+<br/>
+| DOMAIN | TYPE | ATTRIBUTE | VALUE |<br/>
++--------+------+-----------+-------+<br/>
+|java.lang| OperatingSystem |FreePhysicalMemorySize<br/>
+|java.lang| OperatingSystem |FreeSwapSpaceSize<br/>
+|java.lang| OperatingSystem |ProcessCpuLoad<br/>
+|java.lang| OperatingSystem |SystemCpuLoad<br/>
+|java.lang| OperatingSystem |TotalSwapSpaceSize<br/>
+|java.lang| OperatingSystem |SystemLoadAverage<br/>
+|java.lang| Memory |Verbose<br/>
+|java.lang| ClassLoading |LoadedClassCount<br/>
+|JMImplementation| MBeanServerDelegate |MBeanServerId<br/>
++--------+------+-----------+-------+<br/>
+		
+		</div>
+		
 
 	</div>
 
