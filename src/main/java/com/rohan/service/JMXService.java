@@ -22,6 +22,15 @@ public class JMXService {
 
 	Set<String> AttributeList = new HashSet<>();
 
+	/**
+	 * 
+	 * @return Set<String>
+	 * @throws InstanceNotFoundException
+	 * @throws IntrospectionException
+	 * @throws ReflectionException
+	 * 
+	 *             This method will return a list of all domain names
+	 */
 	public Set<String> getJMXObject() throws InstanceNotFoundException, IntrospectionException, ReflectionException {
 		MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
 		Set<ObjectName> mbeans = mBeanServer.queryNames(null, null);
@@ -33,7 +42,18 @@ public class JMXService {
 		return domainlist;
 	}
 
-	// 1st Layer
+	/**
+	 * 
+	 * @param Domain
+	 * @return Set<String>
+	 * @throws InstanceNotFoundException
+	 * @throws IntrospectionException
+	 * @throws ReflectionException
+	 * 
+	 * 
+	 *             This method will return a list of all types according to domain
+	 *             name
+	 */
 	public Set<String> getSpecificJMXObject(String Domain)
 			throws InstanceNotFoundException, IntrospectionException, ReflectionException {
 		MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
@@ -47,7 +67,18 @@ public class JMXService {
 		return typelist;
 	}
 
-	// 2nd Layer
+	/**
+	 * 
+	 * @param Domain
+	 * @param keyProperty
+	 * @return Set<String>
+	 * @throws InstanceNotFoundException
+	 * @throws IntrospectionException
+	 * @throws ReflectionException
+	 * 
+	 *             This method will return a list of all names according to domain
+	 *             name and type name
+	 */
 	public Set<String> getSpecificKeyProperty(String Domain, String keyProperty)
 			throws InstanceNotFoundException, IntrospectionException, ReflectionException {
 
@@ -67,49 +98,22 @@ public class JMXService {
 		return namelist;
 	}
 
-	public Set<String> getSpecificKeyProperty(String Domain, String keyProperty, String name)
-			throws InstanceNotFoundException, IntrospectionException, ReflectionException,
-			javax.management.IntrospectionException {
-		MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-		Set<ObjectName> mbeans = mBeanServer.queryNames(null, null);
-		for (ObjectName mbean : mbeans) {
-			if (mbean.getDomain().equals(Domain)) {
-
-				if (mbean.getKeyProperty("type").equals(keyProperty)) {
-					// if (mbean.getKeyProperty("name").equals(name)) {
-					try {
-						getAttributes(mBeanServer, mbean);
-					} catch (Exception ex) {
-						ex.printStackTrace();
-					}
-					// }
-				}
-			}
-		}
-		return AttributeList;
-	}
-
-	public void getAttributes(final MBeanServer mBeanServer, final ObjectName http)
-			throws InstanceNotFoundException, IntrospectionException, ReflectionException,
-			javax.management.IntrospectionException, IOException, MBeanException, AttributeNotFoundException {
-		MBeanInfo info = mBeanServer.getMBeanInfo(http);
-		MBeanAttributeInfo[] attrInfo = info.getAttributes();
-
-		String portno = System.getProperty("com.sun.management.jmxremote.port");
-		JMXServiceURL url = new JMXServiceURL(
-				"service:jmx:rmi:///jndi/rmi://" + "localhost" + ":" + portno + "/jmxrmi");
-		JMXConnector jmxc = JMXConnectorFactory.connect(url, null);
-		MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
-
-		for (MBeanAttributeInfo attr : attrInfo) {
-			if (attr.isReadable()) {
-				AttributeList.add("Attribute : " + attr.getName() + " ---> Value : "
-						+ mbsc.getAttribute(http, attr.getName()).toString());
-
-			}
-		}
-	}
-
+	/**
+	 * 
+	 * @param Domain
+	 * @param keyProperty
+	 * @param name
+	 * @return Set<String>
+	 * @throws InstanceNotFoundException
+	 * @throws IntrospectionException
+	 * @throws ReflectionException
+	 * @throws AttributeNotFoundException
+	 * @throws MBeanException
+	 * @throws IOException
+	 * 
+	 *             This method will invoke getAttributes method according to domain,
+	 *             type and name and return list of attributes
+	 */
 	public Set<String> getIndividualAttributes(String Domain, String keyProperty, String name)
 			throws InstanceNotFoundException, IntrospectionException, ReflectionException, AttributeNotFoundException,
 			MBeanException, IOException {
@@ -140,6 +144,21 @@ public class JMXService {
 		return AttributeList;
 	}
 
+	/**
+	 * 
+	 * @param mBeanServer
+	 * @param http
+	 * @throws InstanceNotFoundException
+	 * @throws IntrospectionException
+	 * @throws ReflectionException
+	 * @throws javax.management.IntrospectionException
+	 * @throws IOException
+	 * @throws MBeanException
+	 * @throws AttributeNotFoundException
+	 * 
+	 *             This method will add Attributes to AttributeList Object according
+	 *             to ObjectName
+	 */
 	public void getOnlyAttributes(final MBeanServer mBeanServer, final ObjectName http)
 			throws InstanceNotFoundException, IntrospectionException, ReflectionException,
 			javax.management.IntrospectionException, IOException, MBeanException, AttributeNotFoundException {
@@ -152,6 +171,23 @@ public class JMXService {
 		}
 	}
 
+	/**
+	 * 
+	 * @param Domain
+	 * @param keyProperty
+	 * @param name
+	 * @param attribute
+	 * @return String
+	 * @throws InstanceNotFoundException
+	 * @throws IntrospectionException
+	 * @throws ReflectionException
+	 * @throws javax.management.IntrospectionException
+	 * 
+	 * 
+	 *             This method will invoke getAttributes method according to domain,
+	 *             type and name
+	 * 
+	 */
 	public String getSpecificKeyProperty(String Domain, String keyProperty, String name, String attribute)
 			throws InstanceNotFoundException, IntrospectionException, ReflectionException,
 			javax.management.IntrospectionException {
@@ -189,6 +225,25 @@ public class JMXService {
 		return "";
 	}
 
+	/**
+	 * 
+	 * @param mBeanServer
+	 * @param http
+	 * @param attribute
+	 * @return String
+	 * @throws InstanceNotFoundException
+	 * @throws IntrospectionException
+	 * @throws ReflectionException
+	 * @throws javax.management.IntrospectionException
+	 * @throws IOException
+	 * @throws MBeanException
+	 * @throws AttributeNotFoundException
+	 * 
+	 * 
+	 *             This method is to connect JMX server and retrieve value according
+	 *             to attribute and return that value
+	 * 
+	 */
 	public String getAttributes(final MBeanServer mBeanServer, final ObjectName http, String attribute)
 			throws InstanceNotFoundException, IntrospectionException, ReflectionException,
 			javax.management.IntrospectionException, IOException, MBeanException, AttributeNotFoundException {
@@ -209,9 +264,10 @@ public class JMXService {
 				if (attr.getName().equals(attribute)) {
 
 					System.out.println("Got value AS " + mbsc.getAttribute(http, attr.getName()));
-					Object ob = mbsc.getAttribute(http, attr.getName());
+					// Object ob = mbsc.getAttribute(http, attr.getName());
 
-					if ("".startsWith("javax.management.openmbean.CompositeDataSupport")) {
+					if (mbsc.getAttribute(http, attr.getName()).toString()
+							.startsWith("javax.management.openmbean.CompositeDataSupport")) {
 						return "javax.management.openmbean.CompositeDataSupport";
 					}
 
@@ -222,42 +278,69 @@ public class JMXService {
 		return null;
 	}
 
+	/**
+	 * 
+	 * @param Domain
+	 * @param type
+	 * @param name
+	 * @param attribute
+	 * @return String
+	 * @throws Exception
+	 * 
+	 *             This method will return value according to domain, type, name and
+	 *             attribute
+	 * 
+	 */
 	public String getValuesForFillData(String Domain, String type, String name, String attribute) throws Exception {
-		// System.out.println("Domain : "+Domain+" Type : "+type+" Attribute :
-		// "+attribute);
 		MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-		
-		String query=Domain+":type="+type+"*";
+
+		String query = Domain + ":type=" + type + "*";
 		if (!name.equals("")) {
-			
-			query=Domain+":type="+type+",name="+name;
-			
-		}else {
+
+			query = Domain + ":type=" + type + ",name=" + name;
+
+		} else {
 			name = null;
 		}
 
 		Set<ObjectName> mbeans = mBeanServer.queryNames(new ObjectName(query), null);
 		String value = null;
 		for (ObjectName mbean : mbeans) {
-			
-			
-				try {
-					
-					value = getAttributesForFillTable(mBeanServer, mbean, attribute);
-					
-					if(value!=null) {
-						return value;
-					}
-					
+
+			try {
+
+				value = getAttributesForFillTable(mBeanServer, mbean, attribute);
+
+				if (value != null) {
 					return value;
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
-			
+
+				return value;
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 		}
 		return "";
 	}
 
+	/**
+	 * 
+	 * @param mBeanServer
+	 * @param http
+	 * @param attribute
+	 * @return String
+	 * @throws InstanceNotFoundException
+	 * @throws IntrospectionException
+	 * @throws ReflectionException
+	 * @throws javax.management.IntrospectionException
+	 * @throws IOException
+	 * @throws MBeanException
+	 * @throws AttributeNotFoundException
+	 * 
+	 *             This method is to connect JMX server and retrieve value according
+	 *             to attribute and return that value
+	 */
 	public String getAttributesForFillTable(final MBeanServer mBeanServer, final ObjectName http, String attribute)
 			throws InstanceNotFoundException, IntrospectionException, ReflectionException,
 			javax.management.IntrospectionException, IOException, MBeanException, AttributeNotFoundException {
@@ -274,11 +357,7 @@ public class JMXService {
 
 		for (MBeanAttributeInfo attr : attrInfo) {
 			if (attr.isReadable()) {
-				// System.out.println("Checking Attribute :"+attr.getName()+": and
-				// :"+attribute+":");
 				if (attr.getName().equals(attribute)) {
-					 System.out.println("Value : " + mbsc.getAttribute(http, attr.getName()).toString());
-					// attr.getName()).toString());
 					return mbsc.getAttribute(http, attr.getName()).toString();
 				}
 			}
